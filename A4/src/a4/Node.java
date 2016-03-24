@@ -1,7 +1,7 @@
 package a4;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class Node 
 {
@@ -15,6 +15,12 @@ public class Node
 	}
 	public Node(boolean[] pixels){		
 		this.pixels = pixels;			
+	}
+	//	
+	@Override
+	public String toString() {
+		return "Node [pixels=" + Arrays.toString(pixels) + ", moveDescription=" + moveDescription + ", children="
+				+ children + "]";
 	}
 	//
 	public int getChildrenNumber()
