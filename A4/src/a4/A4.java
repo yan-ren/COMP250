@@ -1,15 +1,75 @@
 package a4;
 
 public class A4 {
+	
+	public final static int[][] triplets = {{0,1,2}, {3,4,5},
+							{6,7,8}, {7,8,9}, {8,9,10}, {9,10,11},{10,11,12},
+							{13,14,15},{14,15,16},{15,16,17},{16,17,18},{17,18,19},
+							{20,21,22},{21,22,23},{22,23,24},{23,24,25},{24,25,26},
+							{27,28,29},{30,31,32},
+							{12,19,26},{11,18,25},
+							{2,5,10},{5,10,17},{10,17,24},{17,24,29},{24,29,32},
+							{1,4,9},{4,9,16},{9,16,23},{16,23,28},{23,28,31},
+							{0,3,8},{3,8,15},{8,15,22},{15,22,27},{22,27,30},
+							{7,14,21},{6,13,20}
+	};
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		//System.out.println(triplets[37].length);
+		
+		HiRiQ W=new HiRiQ((byte) 0) ;
+		//W.print(); System.out.println(W.IsSolved());
+		Node root = new Node();
+		root.pixels = W.load(root.pixels);
+		//System.out.println(root);
+		
+		
 	}
 	
-	public static void compare()
+	public static Node doSubstitution(Node a, int tripletsIndex){
+		Node newNode = a;
+		String moveDescription;
+		if(newNode.pixels[triplets[tripletsIndex][0]]==newNode.pixels[triplets[tripletsIndex][1]])
+		{
+			if(newNode.pixels[triplets[tripletsIndex][0]]==false){
+				newNode.pixels[triplets[tripletsIndex][0]]=true;
+				newNode.pixels[triplets[tripletsIndex][1]]=true;
+				moveDescription = triplets[tripletsIndex][0]+"B"+triplets[tripletsIndex][2];
+				newNode.addMoveDescription(moveDescription);
+			}else{
+				newNode.pixels[triplets[tripletsIndex][0]]=false;
+				newNode.pixels[triplets[tripletsIndex][1]]=false;
+				moveDescription = triplets[tripletsIndex][0]+"W"+triplets[tripletsIndex][2];
+				newNode.addMoveDescription(moveDescription);
+			}
+		}
+		else
+		{
+			if(newNode.pixels[triplets[tripletsIndex][1]]==false){
+				newNode.pixels[triplets[tripletsIndex][1]]=true;
+				newNode.pixels[triplets[tripletsIndex][2]]=true;
+				moveDescription = triplets[tripletsIndex][0]+"B"+triplets[tripletsIndex][2];
+				newNode.addMoveDescription(moveDescription);
+			}else{
+				newNode.pixels[triplets[tripletsIndex][1]]=false;
+				newNode.pixels[triplets[tripletsIndex][2]]=false;
+				moveDescription = triplets[tripletsIndex][0]+"W"+triplets[tripletsIndex][2];
+				newNode.addMoveDescription(moveDescription);
+			}
+		}
+		return newNode;
+	}
+	public static boolean[] checkSubstitutionTriplets(Node a)
 	{
-		
+		int countForSubstitutionTriplets = 0;
+		boolean[] tripletsCheckList = new boolean[triplets.length]; 
+		for(int i = 0; i<triplets.length; i++){
+			if(a.pixels[triplets[i][0]]==a.pixels[triplets[i][1]] || a.pixels[triplets[i][1]]==a.pixels[triplets[i][2]]){
+				tripletsCheckList[i] = true;
+				countForSubstitutionTriplets++;
+			}
+		}
+		return tripletsCheckList;
 	}
 
 }
