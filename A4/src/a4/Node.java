@@ -1,14 +1,13 @@
 package a4;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Node 
+public class Node implements Comparable<Node>
 {
 	boolean[] pixels=new boolean[33];
-	private String moveDescription;
-	private Node parent;
-	ArrayList<Node> children = new ArrayList<Node>();
+	private String moveDescription = "";
+	//private Node parent;
+	//ArrayList<Node> children = new ArrayList<Node>();
 	//
 	public Node()
 	{
@@ -26,7 +25,7 @@ public class Node
 		return moveDescription;
 	}
 	public void addMoveDescription(String moveDescription) {
-		if(this.moveDescription == null){
+		if(this.moveDescription.equals("")){
 			this.moveDescription = moveDescription;
 		}
 		else{this.moveDescription = this.moveDescription +","+ moveDescription;}
@@ -51,6 +50,7 @@ public class Node
 			return false;
 		return true;
 	}
+	/*
 	//
 	public Node getParent() {
 		return parent;
@@ -70,14 +70,14 @@ public class Node
 		addChild(child);
 	}
 	//
-	public int getChildrenNumber()
-	{
-		return this.children.size();
-	}
-	//
+	 */	
 	@Override
 	public String toString() {
 		return "Node [moveDescription=" + moveDescription + "]";
 	}
-
+	@Override
+	public int compareTo(Node o) {
+		// TODO Auto-generated method stub
+		return moveDescription.compareTo(o.moveDescription);
+	}
 }
