@@ -1,5 +1,9 @@
 package a4;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class A4 {
 	
 	public final static int[][] triplets = {{0,1,2}, {3,4,5},
@@ -17,28 +21,116 @@ public class A4 {
 	public static void main(String[] args) {
 		//System.out.println(triplets[37].length);
 		
-		HiRiQ W=new HiRiQ((byte) 0) ;
+		HiRiQ W=new HiRiQ((byte) 1) ;
 		//W.print(); System.out.println(W.IsSolved());
 		Node root = new Node();
 		root.pixels = W.load(root.pixels);
 		//System.out.println(root);
 		
+//		boolean[] testArray = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false};
+//		root.pixels=testArray;
+				//check if root is already a solved configuration
+		W.store(root.pixels);
+		if(W.IsSolved()==true){System.out.println("configure is solved");System.exit(0);}
+		W.print();
+		////////////debug code		
+/*		boolean[] checkList = checkSubstitutionTriplets(root);
+		System.out.println("number in checkList: "+ checkList.length);
+
+		int index=0;
+		for(int i = 0; i<checkList.length; i++)
+		{
+			if(checkList[i]==true)
+			{
+				System.out.println("triplets index can do substitution: "+ i);				
+				System.out.println("index" + Arrays.toString(triplets[i]));
+				index = i;
+			}
+		}
+		Node nodeToBeAdded = new Node(root);
 		
-	}
+		//System.out.println(Arrays.toString(nodeToBeAdded.pixels));
+		//System.out.println("size of node to be addeded" + nodeToBeAdded.pixels.length);
+		
+		nodeToBeAdded = doSubstitution(nodeToBeAdded, index);
+		
+		W.store(nodeToBeAdded.pixels);
+		W.print();		
+*/
+		//////////////////////////
+		int level=1;
+		ArrayList<Node> allNodes = new ArrayList<Node>();
+		
+		ArrayList<Node> currentLevel = new ArrayList<Node>();
+		currentLevel.add(root);
+		ArrayList<Node> nextLevel = new ArrayList<Node>();
+	
+		while(true){
+			
+			//for(int level=1; level < 40; level++){
+			
+			//level++;
+			System.out.println("current level: "+ level);
+			System.out.println("currentLevel size:  "+ currentLevel.size());
+			//create next level of tree by analysising each node in current level
+			for(int i=0; i<currentLevel.size();i++)
+			{
+				//each node in current will have #true in check list
+				boolean[] checkList = checkSubstitutionTriplets(currentLevel.get(i));				
+				for(int j=0; j<checkList.length; j++){
+					//for each child node
+					if(checkList[j]==true){
+						Node nodeToBeAdded = new Node(currentLevel.get(i));
+						nodeToBeAdded = doSubstitution(nodeToBeAdded, j);
+						//check same
+						//if(Arrays.equals(currentLevel.get(i).pixels, nodeToBeAdded.pixels)){continue;}				
+						W.store(nodeToBeAdded.pixels);
+						//
+//						W.print();
+//						System.out.println("-----------");
+						//check if nodeToBeAdded contains a solved config
+						if(W.IsSolved()==true)
+						{
+							System.out.println("configure is solved");
+							System.out.println(nodeToBeAdded);
+							System.exit(0);
+						}
+						else
+						{
+							nextLevel.add(nodeToBeAdded);
+						}
+						
+					}										
+				}
+			}
+						
+			//next level creation finished
+			currentLevel.clear();
+			currentLevel.addAll(nextLevel);
+			nextLevel.clear();
+			level++;
+			}		
+		}
+	//}
 	
 	public static Node doSubstitution(Node a, int tripletsIndex){
 		Node newNode = a;
 		String moveDescription;
+		//System.out.println("do sub at index: "+tripletsIndex);
+		//System.out.println(triplets[tripletsIndex][0]);
+		//System.out.println(triplets[tripletsIndex][1]);
 		if(newNode.pixels[triplets[tripletsIndex][0]]==newNode.pixels[triplets[tripletsIndex][1]])
 		{
 			if(newNode.pixels[triplets[tripletsIndex][0]]==false){
 				newNode.pixels[triplets[tripletsIndex][0]]=true;
 				newNode.pixels[triplets[tripletsIndex][1]]=true;
+				newNode.pixels[triplets[tripletsIndex][2]]=false;
 				moveDescription = triplets[tripletsIndex][0]+"B"+triplets[tripletsIndex][2];
 				newNode.addMoveDescription(moveDescription);
 			}else{
 				newNode.pixels[triplets[tripletsIndex][0]]=false;
 				newNode.pixels[triplets[tripletsIndex][1]]=false;
+				newNode.pixels[triplets[tripletsIndex][2]]=true;
 				moveDescription = triplets[tripletsIndex][0]+"W"+triplets[tripletsIndex][2];
 				newNode.addMoveDescription(moveDescription);
 			}
@@ -48,11 +140,13 @@ public class A4 {
 			if(newNode.pixels[triplets[tripletsIndex][1]]==false){
 				newNode.pixels[triplets[tripletsIndex][1]]=true;
 				newNode.pixels[triplets[tripletsIndex][2]]=true;
+				newNode.pixels[triplets[tripletsIndex][0]]=false;
 				moveDescription = triplets[tripletsIndex][0]+"B"+triplets[tripletsIndex][2];
 				newNode.addMoveDescription(moveDescription);
 			}else{
 				newNode.pixels[triplets[tripletsIndex][1]]=false;
 				newNode.pixels[triplets[tripletsIndex][2]]=false;
+				newNode.pixels[triplets[tripletsIndex][0]]=true;
 				moveDescription = triplets[tripletsIndex][0]+"W"+triplets[tripletsIndex][2];
 				newNode.addMoveDescription(moveDescription);
 			}
@@ -61,14 +155,39 @@ public class A4 {
 	}
 	public static boolean[] checkSubstitutionTriplets(Node a)
 	{
-		int countForSubstitutionTriplets = 0;
-		boolean[] tripletsCheckList = new boolean[triplets.length]; 
+		//int countForSubstitutionTriplets = 0;
+		boolean[] tripletsCheckList = new boolean[triplets.length];
+		//
+		//System.out.println(Arrays.toString(tripletsCheckList));
+		//
 		for(int i = 0; i<triplets.length; i++){
-			if(a.pixels[triplets[i][0]]==a.pixels[triplets[i][1]] || a.pixels[triplets[i][1]]==a.pixels[triplets[i][2]]){
+			/*
+			if((a.pixels[triplets[i][0]]==true) && (a.pixels[triplets[i][1]] ==true) && (a.pixels[triplets[i][2]] == false)){		
+				tripletsCheckList[i] = true;					
+			}
+			else if((a.pixels[triplets[i][0]]==false) && (a.pixels[triplets[i][1]] ==true) && (a.pixels[triplets[i][2]] == true))
+			{
 				tripletsCheckList[i] = true;
-				countForSubstitutionTriplets++;
+			}
+			*/
+			
+			if(a.pixels[triplets[i][0]]==a.pixels[triplets[i][1]] || a.pixels[triplets[i][1]]==a.pixels[triplets[i][2]]){
+				if(a.pixels[triplets[i][0]]!=a.pixels[triplets[i][2]]){					
+						tripletsCheckList[i] = true;					
+				//countForSubstitutionTriplets++;
+				}				
 			}
 		}
+		//count how many sub pixels
+		/*int count = 0;
+		for(int i =0; i< tripletsCheckList.length; i++)
+		{
+			if(tripletsCheckList[i]== true){
+				count ++;
+			}
+		}
+		System.out.println("for current level, there are "+ count+ " subs");*/
+		//
 		return tripletsCheckList;
 	}
 

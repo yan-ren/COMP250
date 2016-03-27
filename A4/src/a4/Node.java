@@ -14,22 +14,44 @@ public class Node
 	{
 		
 	}
-	public Node(boolean[] pixels){		
-		this.pixels = pixels;			
+	public Node(Node a){		
+		this.pixels = Arrays.copyOf(a.pixels, a.pixels.length);
+		this.moveDescription = a.moveDescription;
 	}
 	//
 	public boolean[] getPixels() {
 		return pixels;
 	}
-	public void setPixels(boolean[] pixels) {
-		this.pixels = pixels;
-	}
 	public String getMoveDescription() {
 		return moveDescription;
 	}
 	public void addMoveDescription(String moveDescription) {
-		this.moveDescription = this.moveDescription +","+ moveDescription;
+		if(this.moveDescription == null){
+			this.moveDescription = moveDescription;
+		}
+		else{this.moveDescription = this.moveDescription +","+ moveDescription;}
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(pixels);
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Node other = (Node) obj;
+		if (!Arrays.equals(pixels, other.pixels))
+			return false;
+		return true;
+	}
+	//
 	public Node getParent() {
 		return parent;
 	}
@@ -41,13 +63,11 @@ public class Node
 	}
 	//
 	public void addChild(Node child){
+		child.parent = this;
 		children.add(child);
 	}
-	//
-	@Override
-	public String toString() {
-		return "Node [pixels=" + Arrays.toString(pixels) + ", moveDescription=" + moveDescription + ", children="
-				+ children + "]";
+	public void add(Node child){
+		addChild(child);
 	}
 	//
 	public int getChildrenNumber()
@@ -55,5 +75,9 @@ public class Node
 		return this.children.size();
 	}
 	//
+	@Override
+	public String toString() {
+		return "Node [moveDescription=" + moveDescription + "]";
+	}
 
 }
