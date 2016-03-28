@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 public class Node implements Comparable<Node>
 {
-	boolean[] pixels=new boolean[33];
+	boolean[] pixels;
 	private String moveDescription = "";
 	//private Node parent;
 	//ArrayList<Node> children = new ArrayList<Node>();
 	//
 	public Node()
 	{
-		
+		pixels=new boolean[33];
 	}
 	public Node(Node a){		
 		this.pixels = Arrays.copyOf(a.pixels, a.pixels.length);

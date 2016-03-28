@@ -3,7 +3,6 @@ package a4;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.ZipEntry;
 
 public class A4 {
 	
@@ -19,21 +18,21 @@ public class A4 {
 							{7,14,21},{6,13,20}
 	};
 
-	public static void main(String[] args) {
-		//System.out.println(triplets[37].length);
-		
-		HiRiQ W=new HiRiQ((byte) 3) ;
-		//W.print(); System.out.println(W.IsSolved());
+	public static void main(String[] args) {		
+		HiRiQ W=new HiRiQ((byte) 3);
+		System.out.println("starting configure");
+		W.print(); System.out.println(W.IsSolved());
 		Node root = new Node();
 		root.pixels = W.load(root.pixels);
 		//System.out.println(root);
 		
 //		boolean[] testArray = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false};
 //		root.pixels=testArray;
-				//check if root is already a solved configuration
+		
+		//check if root is already a solved configuration
 		W.store(root.pixels);
-		if(W.IsSolved()==true){System.out.println("configure is solved");System.exit(0);}
-		W.print();
+		if(W.IsSolved()==true){System.out.println("input configure is already solved");System.exit(0);}
+		
 		////////////debug code		
 /*		boolean[] checkList = checkSubstitutionTriplets(root);
 		System.out.println("number in checkList: "+ checkList.length);
@@ -62,28 +61,34 @@ public class A4 {
 		int level=1; 
 		int currentLevelSize = 0;
 		//ArrayList<Node> allNodes = new ArrayList<Node>();
+		
+		/*
+		 * build a virtual tree, explore this tree using BFS
+		 * use a Set to store all explored node to avoid traverse same node twice
+		 * tow arrayList are for traversing the tree
+		 */
 		Set<Node> allNodes = new HashSet<Node>();
 		ArrayList<Node> currentLevel = new ArrayList<Node>();		
 		ArrayList<Node> nextLevel = new ArrayList<Node>();
-		
+		//add root node to Tree Set, add root to current level, we start with root node.
 		allNodes.add(root);
 		currentLevel.add(root);
-		while(true){
-			
+		//
+		while(true){			
 			//for(int level=1; level < 40; level++){
 			currentLevelSize = currentLevel.size();
 			//if(level==5){break;}
-			System.out.println("current level: "+ level+" nodes in currentLevel:  "+ currentLevel.size());
-			if(currentLevelSize==0){break;}
-			//create next level of tree by analysising each node in current level
+			System.out.println("current level: "+ level+", nodes in currentLevel:  "+ currentLevel.size());
+			
+			//create next level of tree by analysing each node in current level
 			for(int i=0; i<currentLevel.size();i++)
 			{
 				//each node in current will have #true in check list
 				boolean[] checkList;
 				if(currentLevelSize > 1000){
-					checkList = checkSubstitutionTriplets_W(currentLevel.get(i), currentLevelSize);	
+					checkList = checkSubstitutionTriplets_W(currentLevel.get(i));	
 				}else{
-					checkList = checkSubstitutionTriplets_WB(currentLevel.get(i), currentLevelSize);
+					checkList = checkSubstitutionTriplets_WB(currentLevel.get(i));
 				}
 				//
 				for(int j=0; j<checkList.length; j++){
@@ -120,8 +125,7 @@ public class A4 {
 						
 					}										
 				}
-			}
-						
+			}						
 			//next level creation finished
 			currentLevel.clear();
 			currentLevel.addAll(nextLevel);
@@ -131,6 +135,7 @@ public class A4 {
 		}
 	//}
 	
+	//perform W or B-substitution
 	public static Node doSubstitution(Node a, int tripletsIndex){
 		Node newNode = a;
 		String moveDescription;
@@ -171,7 +176,9 @@ public class A4 {
 		}
 		return newNode;
 	}
-	public static boolean[] checkSubstitutionTriplets_WB(Node a, int currentLevelSize)
+	
+	//check Triplets that satisfy W or B-substitution 
+	public static boolean[] checkSubstitutionTriplets_WB(Node a)
 	{
 		boolean[] tripletsCheckList = new boolean[triplets.length];
 		//count how many sub pixels
@@ -182,7 +189,7 @@ public class A4 {
 //				count ++;
 //			}
 //		}
-//		if(count <= 4){	
+//		
 		for(int i = 0; i<triplets.length; i++){
 			//allow W and B sub
 			if(a.pixels[triplets[i][0]]==a.pixels[triplets[i][1]] || a.pixels[triplets[i][1]]==a.pixels[triplets[i][2]]){
@@ -191,10 +198,11 @@ public class A4 {
 				}				
 			}
 		}
-//		}
 		return tripletsCheckList;
 	}
-	public static boolean[] checkSubstitutionTriplets_W(Node a, int currentLevelSize)
+	
+	//check Triplets that satisfy W-substitution
+	public static boolean[] checkSubstitutionTriplets_W(Node a)
 	{
 		boolean[] tripletsCheckList = new boolean[triplets.length];
 		//
@@ -202,8 +210,6 @@ public class A4 {
 		//
 		//if (currentLevelSize > 2000){
 		for(int i = 0; i<triplets.length; i++){
-			
-			//only allow W-sub
 			if((a.pixels[triplets[i][0]]==true) && (a.pixels[triplets[i][1]] ==true) && (a.pixels[triplets[i][2]] == false)){		
 				tripletsCheckList[i] = true;					
 			}
@@ -213,11 +219,6 @@ public class A4 {
 			}
 				
 		}
-		//}else{
-
-		
-
-		//}
 		///////////
 		//count how many sub pixels
 		/*int count = 0;
@@ -231,7 +232,6 @@ public class A4 {
 		//
 		return tripletsCheckList;
 	}
-
 }
 
 class HiRiQ
@@ -256,7 +256,7 @@ class HiRiQ
 	  {config=-411153748; weight=13;}
 	  else
 	  {config=-2147450879; weight=32;}
-  }
+  
 	  /*
 	  if (n==0)
 	   {config=65536/2;weight=1;}
@@ -268,8 +268,8 @@ class HiRiQ
 			  {config=-1026781599; weight=21;}
 			  else
 			  {config=-2147450879; weight=32;}
-  }
-  */
+	   */
+  } 
   //initialize the configuration to one of 4 START setups n=0,10,20,30
 
   boolean IsSolved()
