@@ -118,10 +118,10 @@ public class TrainLine {
 	// make any other change to the header.
 	public TrainStation travelOneStation(TrainStation current, TrainStation previous) {
 		// current station is transfer station and previous is not transfer, do transfer
-		if(current.hasConnection && !previous.equals(current.getTransferStation())) {
+		if (current.hasConnection && !previous.equals(current.getTransferStation())) {
 			return current.getTransferStation();
 		}
-		// getNext gives the next station on the same line
+		// otherwise stay on the same line, getNext gives the next station on the same line
 		return getNext(current);
 	}
 
@@ -169,70 +169,66 @@ public class TrainLine {
 		}
 	}
 
+	// bubble sort doubly linked list
 	public void sortLine() {
-		//bubble sort doubly linked list
-		int swapped, i;  
-	    TrainStation pointer;  
-	   
-	    do
-	    {  
-	        swapped = 0;  
-	        pointer = this.leftTerminus;  
-	  
-	        while (!pointer.getRight().isRightTerminal())  
-	        {  
-	        	//The result is a positive integer if this String object lexicographically follows the argument string.
-	            if (pointer.getName().compareTo(pointer.getRight().getName()) > 0)  
-	            {  
-	            	if(pointer.isLeftTerminal()) {
-	            		TrainStation next = pointer.getRight();
-	            		pointer.setRight(pointer.getRight().getRight());
-	            		pointer.setLeft(next);
-	            		pointer.setNonTerminal();
-	            		next.setLeft(null);
-	            		next.setLeftTerminal();
-	            		next.setRight(pointer);
-	            		pointer.getRight().setLeft(pointer);
-	            	}else {
-	            		TrainStation next = pointer.getRight();
-	            		TrainStation nextNext = pointer.getRight().getRight();
-	            		TrainStation previous = pointer.getLeft();
-	            		previous.setRight(next);
-	            		pointer.setLeft(next);
-	            		pointer.setRight(nextNext);
-	            		next.setLeft(previous);
-	            		next.setRight(pointer);
-	            		nextNext.setLeft(pointer);
-	            	}
-	                swapped = 1;  
-	            }  
-	            pointer = pointer.getRight();  
-	        }
-	        
-	        // swap with the right terminal if needed
-	        if (pointer.getName().compareTo(pointer.getRight().getName()) > 0)  
-            {  
-            	// if doing swap here, pointer.right is right terminus
-	        	pointer.getRight().setNonTerminal();
-	        	pointer.getRight().setLeft(pointer.getLeft());
-	        	pointer.getRight().setRight(pointer);
-	        	pointer.getLeft().setRight(pointer.getRight());
-	        	pointer.setLeft(pointer.getRight());
-	        	pointer.setRight(null);
-	        	pointer.isRightTerminal();
-                swapped = 1;  
-            }  
-	        
-	    }  
-	    while (swapped != 0);  
-	    
+		int swapped, i;
+		TrainStation pointer;
+
+		do {
+			swapped = 0;
+			pointer = this.leftTerminus;
+
+			while (!pointer.getRight().isRightTerminal()) {
+				// The result is a positive integer if this String object lexicographically
+				// follows the argument string.
+				if (pointer.getName().compareTo(pointer.getRight().getName()) > 0) {
+					if (pointer.isLeftTerminal()) {
+						TrainStation next = pointer.getRight();
+						pointer.setRight(pointer.getRight().getRight());
+						pointer.setLeft(next);
+						pointer.setNonTerminal();
+						next.setLeft(null);
+						next.setLeftTerminal();
+						next.setRight(pointer);
+						pointer.getRight().setLeft(pointer);
+					} else {
+						TrainStation next = pointer.getRight();
+						TrainStation nextNext = pointer.getRight().getRight();
+						TrainStation previous = pointer.getLeft();
+						previous.setRight(next);
+						pointer.setLeft(next);
+						pointer.setRight(nextNext);
+						next.setLeft(previous);
+						next.setRight(pointer);
+						nextNext.setLeft(pointer);
+					}
+					swapped = 1;
+				}
+				pointer = pointer.getRight();
+			}
+
+			// swap with the right terminal if needed
+			if (pointer.getName().compareTo(pointer.getRight().getName()) > 0) {
+				// if doing swap here, pointer.right is right terminus
+				pointer.getRight().setNonTerminal();
+				pointer.getRight().setLeft(pointer.getLeft());
+				pointer.getRight().setRight(pointer);
+				pointer.getLeft().setRight(pointer.getRight());
+				pointer.setLeft(pointer.getRight());
+				pointer.setRight(null);
+				pointer.isRightTerminal();
+				swapped = 1;
+			}
+
+		} while (swapped != 0);
+
 		this.lineMap = this.getLineArray();
 	}
 
 	public TrainStation[] getLineArray() {
 		TrainStation[] trains = new TrainStation[getSize()];
 		TrainStation current = this.leftTerminus;
-		for(int i = 0; i < trains.length; i++) {
+		for (int i = 0; i < trains.length; i++) {
 			trains[i] = current;
 			current = current.getLeft();
 		}
@@ -252,6 +248,9 @@ public class TrainLine {
 		return array;
 	}
 
+	/*
+	 * reorder the nodes in doubly linked list basing on the shuffledArray
+	 */
 	public void shuffleLine() {
 
 		// you are given a shuffled array of trainStations to start with
