@@ -24,7 +24,6 @@ public class TrainNetwork {
 	}
 
 	public void undance() {
-		System.out.println("The tracks are moving!");
 		for (int i = 0; i < networkLines.length; i++) {
 			networkLines[i].sortLine();
 		}
@@ -58,7 +57,7 @@ public class TrainNetwork {
 			TrainStation next = curLine.travelOneStation(curStation, preStation);
 			preStation = curStation;
 			curStation = next;
-			curLine = curStation.getLine();
+			curLine = getLineByName(curStation.getLine().getName());
 			
 			hoursCount += 1;
 			if (hoursCount % 2 == 0) {

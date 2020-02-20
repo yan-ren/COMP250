@@ -121,7 +121,8 @@ public class TrainLine {
 		if (current.hasConnection && !previous.equals(current.getTransferStation())) {
 			return current.getTransferStation();
 		}
-		// otherwise stay on the same line, getNext gives the next station on the same line
+		// otherwise stay on the same line, getNext gives the next station on the same
+		// line
 		return getNext(current);
 	}
 
@@ -171,7 +172,7 @@ public class TrainLine {
 
 	// bubble sort doubly linked list
 	public void sortLine() {
-		int swapped, i;
+		int swapped;
 		TrainStation pointer;
 
 		do {
@@ -191,6 +192,7 @@ public class TrainLine {
 						next.setLeftTerminal();
 						next.setRight(pointer);
 						pointer.getRight().setLeft(pointer);
+						this.leftTerminus = next;
 					} else {
 						TrainStation next = pointer.getRight();
 						TrainStation nextNext = pointer.getRight().getRight();
@@ -203,8 +205,9 @@ public class TrainLine {
 						nextNext.setLeft(pointer);
 					}
 					swapped = 1;
+				} else {
+					pointer = pointer.getRight();
 				}
-				pointer = pointer.getRight();
 			}
 
 			// swap with the right terminal if needed
@@ -216,7 +219,8 @@ public class TrainLine {
 				pointer.getLeft().setRight(pointer.getRight());
 				pointer.setLeft(pointer.getRight());
 				pointer.setRight(null);
-				pointer.isRightTerminal();
+				pointer.setRightTerminal();
+				this.rightTerminus = pointer;
 				swapped = 1;
 			}
 
@@ -230,7 +234,7 @@ public class TrainLine {
 		TrainStation current = this.leftTerminus;
 		for (int i = 0; i < trains.length; i++) {
 			trains[i] = current;
-			current = current.getLeft();
+			current = current.getRight();
 		}
 		return trains;
 	}
@@ -254,27 +258,27 @@ public class TrainLine {
 	public void shuffleLine() {
 
 		// you are given a shuffled array of trainStations to start with
-		TrainStation[] lineArray = this.getLineArray();
+		TrainStation[] lineArray = getLineArray();
 		TrainStation[] shuffledArray = shuffleArray(lineArray);
-
-		TrainStation leftT = shuffledArray[0];
-		TrainStation rightT = shuffledArray[shuffledArray.length - 1];
 
 		shuffledArray[0].setRight(shuffledArray[shuffledArray.length - 1]);
 		shuffledArray[shuffledArray.length - 1].setLeft(shuffledArray[0]);
+		shuffledArray[0].setNonTerminal();
+		shuffledArray[shuffledArray.length - 1].setNonTerminal();
 
 		this.leftTerminus = shuffledArray[0];
 		this.rightTerminus = shuffledArray[shuffledArray.length - 1];
 		this.leftTerminus.setLeftTerminal();
 		this.rightTerminus.setRightTerminal();
-		this.leftTerminus.setTrainLine(this);
-		this.rightTerminus.setTrainLine(this);
 
 		for (int i = 1; i < shuffledArray.length - 1; i++) {
-			this.addStation(shuffledArray[i]);
+			shuffledArray[i].setNonTerminal();
+			addStation(shuffledArray[i]);
 		}
 
 		this.lineMap = this.getLineArray();
+//		System.out.println("########shuffleLine##########");
+//		System.out.println(this.toString());
 	}
 
 	public String toString() {
