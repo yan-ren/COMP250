@@ -1,4 +1,4 @@
-package a4_v2;
+package v2;
 
 import java.util.ArrayList;
 import java.util.HashSet;

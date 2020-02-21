@@ -1,4 +1,4 @@
-package a4_v2;
+package v2;
 
 public class Node
 {
